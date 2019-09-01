@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>Show APPL</title>
+
+        <!-- Load c3.css -->
+        <link href="/static/c3/c3.css" rel="stylesheet">
+
+        <!-- Load d3.js and c3.js -->
+        <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+        <!--<script src="/static/c3/d3.v5.min.js" charset="utf-8"></script>-->
+        <script src="/static/c3/c3.min.js"></script>
+
+        <!-- JQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+
+        <style type="text/css">
+            .grid1 > line {
+                stroke-width: 2px; 
+                stroke: green;
+            }
+
+            .grid1 > text {
+                stroke: red;
+            }
+
+            /*path.c3-line-data3 {
+                opacity: 0;
+            }
+
+            .c3-circles-data3 > circle {
+                stroke-width: 10px;
+            }*/
+        </style>
+
+        <!--SCRIPT-->
+        <script>
+            var chart = null;
+            var showData2 = true;
+
+            var ttData = [
+                ['x', // Timestamps
+                {% for c in stock_prices %}
+                    '{{ c.datetime }}',
+                    {% if loop.index>500 %} {% break %} {% endif %}
+                {% endfor %} 
+                ], // Close prices
+                ['close',
+                {% for c in stock_prices %}
+                    '{{ c.close }}',
+                    {% if loop.index>500 %} {% break %} {% endif %}
+                {% endfor %} 
+                ]
+            ];
+
+            document.addEventListener('DOMContentLoaded', function(){
+                // do something
+                console.log("Document READY!");
+
+                //https://c3js.org/gettingstarted.html
+                chart = c3.generate({
+                    bindto: '#stock_plot',
+                    data: {
+                        x: 'x',
+                        columns: ttData,
+                        /*[
+                            ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
+                            ['data1', 30, 200, 100, 400, 150, 250],
+                            ['data2', 50, 20, 10, 40, 15, 25],
+                            ['data3', 1,2,null,4,5,6]
+                        ]*/
+                    },
+                    axis: {
+                        x: {
+                            type: 'timeseries',
+                            tick: {
+                                format: '%Y-%m-%d'
+                            },
+                            label: {
+                                text: 'Date',
+                                position: 'outer-center'
+                            },
+                            extent: ['2019-01-01', '2019-07-26']
+                        },
+                        y: {
+                            label: {
+                                text: "Closing price",
+                                position: "outer-middle"
+                            },
+                            tick: {
+                                format: d3.format("$,") //ADD
+                            }
+                        }
+                    },
+                    zoom: {
+                        enabled: true
+                    },
+                    transition: {
+                        duration: 100
+                    },
+                    legend: {
+                        show: false
+                    },
+                    subchart: {
+                        show: true
+                    },
+                    size: {
+                        height: 500
+                    },
+                    grid: {
+                        x: {
+                            show: true,
+                            /*lines: [
+                                {value: "2013-01-03", class: 'grid1', text: 'BUY'},
+                                {value: "2013-01-04", class: 'grid1', text: 'BUY'},
+                            ]*/
+                        },
+                        y: {
+                            show: true
+                        }
+                    }
+                });
+            });
+
+            //Run random investment simulation
+            function randomSimulation() {
+                console.log("Random simulation...");
+                chart.xgrids.remove();
+
+                var request = $.ajax({
+                    url: "/invest_random",
+                    type: "GET",
+                    // the data needs to be a properly formatted JSON, otherwise the server will complain
+                    data: { },
+                    dataType: "html",
+                    async: true, 
+                    success : function (msg)
+                    {
+                        console.log("Called invest random successfully!");
+                        var obj = JSON.parse(msg);
+                        //check server response, it should have status="OK", otherwise it will be status="error" and a message with error description
+                        console.log("Response status: "+obj.status);
+                        if (obj.status == "OK") {
+                            console.log("Call status OK!");
+                            moves = obj['moves'];
+                            console.log(moves);
+
+                            elem = document.getElementById('moves_log');
+                            console.log("Adding operations...");
+                            console.log(elem);
+                            var total_value = 0;
+                            for (var move_i=0; move_i<moves.length; move_i++) {
+                                console.log("Operation "+move_i);
+                                console.log(moves[move_i]);
+
+                                var ent = document.createElement('div');
+                                ent.innerHTML = "["+move_i+"] "+moves[move_i].datetime+
+                                ", "+moves[move_i].type +
+                                ", Price:"+moves[move_i].price +
+                                ", Stocks:"+moves[move_i].stocks +
+                                ", Funds:"+moves[move_i].funds.toFixed(2);
+
+                                elem.appendChild(ent);
+
+                                //Add to C3 plot
+                                chart.xgrids.add({value: moves[move_i].datetime, class: 'grid1', text: moves[move_i].type});
+                            }
+
+                            var ent = document.createElement('div');
+                            ent.innerHTML = "<b>TOTAL VALUE: "+obj.total_value.toFixed(2)+"</b>";
+                            elem.appendChild(ent);
+
+                            
+                            
+                        } else {
+                            console.log("Error:"+obj.message);
+                        }
+                    }
+                });
+                
+                
+                console.log(chart);
+                //chart.xgrids.add({value: "2019-01-02", class: 'grid1', text: 'SELL'});
+                //['x']['lines'].push({value: "2013-01-02", class: 'grid1', text: 'SELL'},)
+
+            }
+
+            function loadStock() {
+                console.log("Clicked load data...");
+                console.log(chart);
+                chart.load({
+                    columns: [
+                        ['data1', 300, 100, 250, 150, 300, 150, 500],
+                        ['data2', 100, 200, 150, 50, 100, 250]
+                    ]
+                })
+            }
+
+            function toggleShowData() {
+                console.log("Toggle show data: "+showData2);
+                if (showData2 == true) {
+                    chart.hide(['close']);
+                } else {
+                    chart.show(['close']);
+                }
+
+                showData2 = ~showData2;
+            }
+
+        </script>
+    </head>
+    
+    <body>
+        <center>
+            <h3>AAPL stock loaded from file</h3>
+            <button onclick="loadStock();">Load new data</button>
+            <button onclick="toggleShowData();">Toggle show data</button>
+            <button onclick="randomSimulation();">Random invest</button>
+            <div id="stock_plot"></div>
+            
+
+            <div style="height:300px; overflow: scroll; width:48%; float:left">
+                {% for c in stock_prices | sort(attribute='datetime', reverse = True) %}
+                <div>   
+                    [{{ loop.index}}] 
+                    Date:<b>{{ c.datetime }}</b>, 
+                    Close-Price:<b>{{ c.close }}</b>
+                </div> 
+                
+                {% endfor %}
+            </div>            
+            <div id="moves_log" style="height:300px; overflow: scroll; width:48%; float:left">
+                --Moves--
+            </div>
+        </center>
+    </body>
+</html>
