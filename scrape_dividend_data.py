@@ -50,7 +50,13 @@ def getDividendData(stock):
       stock_data['exchange'] = exchange.strip('[]')
 
       full_name = (td_tags[1]).text
-      stock_data['type'] = ("ETF" if "ETF" in full_name else "IND")
+      stype = 'IND'
+      if "ETF" in full_name:
+        stype = "ETF"
+      elif "REIT" in full_name:
+        stype = "REIT"
+
+      stock_data['type'] = stype
       stock_data['full_name'] = full_name
 
       classification = (td_tags[2]).find_all('a')
@@ -115,22 +121,31 @@ with open('./SO.csv', 'a', newline='') as f:
 
 
 if __name__ == "__main__":
-  tickers = ['PFLT','HRZN','PBT','EPR','LEG','O','T','KHC','ABBV','MMM','COR',
+  tickers = ['PFLT','HRZN','PBT','EPR','LEG','O','T','KHC','ABBV','MMM',
             'MRK','HD','VFC','TXN','NBTB','CL','PCLB','MCD','LMT','ADP',
-            'BMO','BCE','IBM','CAH','HPQ','AVGO','WHR','DLR','PEP','NEE','WM',
-            'JNJ','VZ','HRL','GE','XOM','DIS','VXUS','VTV','DWX',
-            'USHY','SDEM','SRET','QYLD','NOBL','DVY','DON',
-            'VGT','DOO','VNQ','AMLP','BDCS','TLT','BND','CMA','QCOM','DVN','IRM',
-            'JCI','PXD','SPG','VNO','WELL','DEI','HUN','HIW','JEF','OMF','TCF',
-            'TRN','WBS','WRI','SQM','BBL','BHP','ENIC','EPD','FL','HBI','HRB',
-            'IPG','LYB','PAC','PM','PSXP','RIO','TCP','TKC','TOT','WYND','ASR',
-            'BKE','BSM','CAMT','CANG','CODI','CPA','CPAC','DBI','DHT','EBF',
-            'FANH','GES','GILT','GSH','HNI','HVT','KRO','MED','MSM','PFE','PSO',
-            'RGP','RMR','SCHN','SKM','SOI','UVV','WDR','SO','AWK','BIP','BIPC',
-            'PLD','TRP','AMKBY','MARUY','MFG','MZHOF','PSX','VLO','MPC','PII',
-            'D','FTAI','WM','ACC','MCY','SRC','SPY','QQQ','SKYY','SPHD', 
+            'BMO','BCE','IBM','CAH','HPQ','AVGO','WHR','PEP','NEE','WM',
+            'JNJ','VZ','HRL','GE','XOM','DIS','DON','DOO','BDCS','CMA',
+            'QCOM','DVN','IRM','JCI','PXD','SPG','WELL','HUN','HIW','JEF',
+            'OMF','TCF','TRN','WBS','WRI','SQM','BBL','BHP','ENIC','EPD',
+            'FL','HBI','HRB','IPG','LYB','PAC','PM','PSXP','RIO','TCP',
+            'TKC','TOT','WYND','ASR','BKE','BSM','CAMT','CANG','CODI','CPA',
+            'CPAC','DBI','DHT','EBF','FANH','GES','GILT','GSH','HNI','HVT',
+            'KRO','MED','MSM','PFE','PSO','RGP','RMR','SCHN','SKM','SOI',
+            'UVV','WDR','SO','AWK','BIP','BIPC','PLD','TRP','AMKBY','MARUY',
+            'MFG','MZHOF','PSX','VLO','MPC','PII','D','FTAI','ACC','MCY','SRC',
+            #ETFS - https://finviz.com/screener.ashx?v=111&f=ind_exchangetradedfund
+            'QQQ','SKYY','SPHD','VNQ','AMLP','BND','DVY','VXUS','VTV','DWX',
             'VYM','VYMI','VTI','VOO','SPY','VOOG','VOOV','SPYD','HYLD','ARKK',
-            "ARKW",'ARKG','ARKQ','ARKF']
+            "ARKW",'ARKG','ARKQ','ARKF','USHY','QYLD','NOBL','SDEM','SRET',
+            'TLT','VGT','CLIX','CWEB','DGAZ','FNGO','FNGU','KOLD','OGIG',
+            'TMF','VIIX','VIXM','VIXY','VXX','VXZ','XVZ',
+            #REIT - office - https://finviz.com/screener.ashx?v=111&f=ind_reitoffice&t=
+            'AAT','COR','DLR','DEI','ARE','BDN','BXP','CIO','CLI','CMCT','CUZ',
+            'CXP','DEA','EQC','FSP','GNL','HIW','HPP','JBGS','KRC','OFC','OPI',
+            'PDM','PGRE','PSTL','SLG','VNO','WRE',
+            #REIT - specialty - https://finviz.com/screener.ashx?v=141&f=ind_reitspecialty
+            'AMT','CCI','CONE','CTT','CXW'
+            ]
 
   df = pd.DataFrame({})
   for index, tckr in enumerate(tickers):
