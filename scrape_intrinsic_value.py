@@ -228,23 +228,6 @@ def getMSNMoneyFinancials(stock, page):
               financials[key] = num
   return financials
 
-  '''
-  if internal_stock_id != None:
-    url_base_general = " https://financials.morningstar.com/"
-    url_add_pattern = "ratios/r.html?t={id}&culture=en&platform=sal"
-    url_final = url_base_general + url_add_pattern.replace("{id}",internal_stock_id)
-
-    print("-> Internal URL final:", url_final)
-
-    response = requests.get(url_final, timeout=10)
-    if response.status_code == 200:
-      #print("Rresp:",response.content.decode('utf-8'))
-      with open("morningstar_ratios.html", 'w') as out:
-        out.write(response.content.decode('utf-8'))
-
-      page_content = BeautifulSoup(response.content, "lxml")
-  '''
-
 #Get the stock prices historical
 def getStockPrices(stock, start, end):
   #url_base_general = "https://finance.yahoo.com/"
@@ -520,7 +503,7 @@ if __name__ == "__main__":
             "SSYS", "CGEN", "EDIT", "NTLA", "PRLB", "CRSP", 'EADSY', 
             "MRNA", 'PHAS', 'MGTA', 'XNCR', 'LAC', 'WIX', 'FIT', 'INO', 'DVAX',
             'NVAX', 'SRNE', 'ARCT', 'IBIO', 'WKHS', 'SHLL', 'FMCI', 'DKNG', 'VRM',
-            'GNUS', 'OPES', 'IDEX', 'ZI', 'LCA', 'MELI', 'SE', 'BILI']
+            'GNUS', 'OPES', 'IDEX', 'ZI', 'LCA', 'MELI', 'SE', 'BILI', 'LEVI']
 
   #ADD MCAP, MONEY/SHARE, DEBT/SHARE 
 

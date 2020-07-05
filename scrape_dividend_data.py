@@ -121,18 +121,18 @@ with open('./SO.csv', 'a', newline='') as f:
 
 
 if __name__ == "__main__":
-  tickers = ['PFLT','HRZN','PBT','EPR','LEG','O','T','KHC','ABBV','MMM',
+  tickers = ['PFLT','HRZN','PBT','LEG','T','KHC','ABBV','MMM',
             'MRK','HD','VFC','TXN','NBTB','CL','PCLB','MCD','LMT','ADP',
             'BMO','BCE','IBM','CAH','HPQ','AVGO','WHR','PEP','NEE','WM',
             'JNJ','VZ','HRL','GE','XOM','DIS','DON','DOO','BDCS','CMA',
-            'QCOM','DVN','IRM','JCI','PXD','SPG','WELL','HUN','HIW','JEF',
-            'OMF','TCF','TRN','WBS','WRI','SQM','BBL','BHP','ENIC','EPD',
+            'QCOM','DVN','IRM','JCI','PXD','HUN','JEF',
+            'OMF','TCF','TRN','WBS','SQM','BBL','BHP','ENIC','EPD',
             'FL','HBI','HRB','IPG','LYB','PAC','PM','PSXP','RIO','TCP',
             'TKC','TOT','WYND','ASR','BKE','BSM','CAMT','CANG','CODI','CPA',
             'CPAC','DBI','DHT','EBF','FANH','GES','GILT','GSH','HNI','HVT',
             'KRO','MED','MSM','PFE','PSO','RGP','RMR','SCHN','SKM','SOI',
-            'UVV','WDR','SO','AWK','BIP','BIPC','PLD','TRP','AMKBY','MARUY',
-            'MFG','MZHOF','PSX','VLO','MPC','PII','D','FTAI','ACC','MCY','SRC',
+            'UVV','WDR','SO','AWK','BIP','BIPC','TRP','AMKBY','MARUY',
+            'MFG','MZHOF','PSX','VLO','MPC','PII','D','FTAI','MCY',
             #ETFS - https://finviz.com/screener.ashx?v=111&f=ind_exchangetradedfund
             'QQQ','SKYY','SPHD','VNQ','AMLP','BND','DVY','VXUS','VTV','DWX',
             'VYM','VYMI','VTI','VOO','SPY','VOOG','VOOV','SPYD','HYLD','ARKK',
@@ -144,7 +144,19 @@ if __name__ == "__main__":
             'CXP','DEA','EQC','FSP','GNL','HIW','HPP','JBGS','KRC','OFC','OPI',
             'PDM','PGRE','PSTL','SLG','VNO','WRE',
             #REIT - specialty - https://finviz.com/screener.ashx?v=141&f=ind_reitspecialty
-            'AMT','CCI','CONE','CTT','CXW'
+            'AMT','CCI','CONE','CTT','CXW',
+            #REIT - residential
+            'ACC',
+            #REIT - diversified
+            'SRC',
+            #REIT - industrial
+            'PLD',
+            #REIT - retail
+            'SPG','WRI','EPR','O',
+            #REIT - Healthcare Facilities
+            'WELL',
+            #REIT - mortgage
+            'NRZ'
             ]
 
   df = pd.DataFrame({})
